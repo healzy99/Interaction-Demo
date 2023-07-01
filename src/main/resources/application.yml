@@ -1,6 +1,13 @@
 server:
   port: 9899
 spring:
+  # redis配置
+  redis:
+    database: 8
+    port: 6379
+  #  password:
+    host: 127.0.0.1
+  # druid配置
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -84,3 +91,11 @@ logging:
       mapper: debug
 log:
   path: D:\Project\Interaction-Demo\logs
+# Mybatis-plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: false
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+  mapper-locations: classpath*:**/mapper/xml/*.xml
+  type-enums-package: com.example.demo.entity.enums
