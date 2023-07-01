@@ -74,3 +74,13 @@ spring:
         session-stat-max-count: 100
         # 过滤路径
         url-pattern: /*
+# 日志配置
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org:
+      mybatis: debug
+    web:
+      mapper: debug
+log:
+  path: D:\Project\Interaction-Demo\logs
