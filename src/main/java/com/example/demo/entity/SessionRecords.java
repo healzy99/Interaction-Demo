@@ -2,9 +2,13 @@ package com.example.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.demo.entity.enums.SessionHandleState;
+import com.example.demo.entity.enums.SessionStatus;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,6 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @TableName("t_session_records")
+@Accessors(chain = true)
 public class SessionRecords implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,6 +32,7 @@ public class SessionRecords implements Serializable {
     /**
      * 会话唯一ID
      */
+    @TableId
     private String sessionId;
 
     /**
@@ -57,7 +63,7 @@ public class SessionRecords implements Serializable {
     /**
      * 0正常  1已接听  2挂断  3异常
      */
-    private Integer status;
+    private SessionStatus status;
 
     /**
      * 证件号码
@@ -82,7 +88,7 @@ public class SessionRecords implements Serializable {
     /**
      * 处理结果	0已完成	1未完成	
      */
-    private Integer handleState;
+    private SessionHandleState handleState;
 
     /**
      * 备注

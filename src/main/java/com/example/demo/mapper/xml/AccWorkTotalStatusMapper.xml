@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.AccWorkTotalStatusMapper">
+    <select id="getWorkStatusByAccount" resultType="com.example.demo.entity.dto.AnswerDTO">
+        SELECT TA.OC_ID,TA.ACC_ID ACCOUNT_ID
+        FROM t_acc_work_total_status TAWTS
+        LEFT JOIN t_account TA ON TA.ACC_ID = TAWTS.ACC_ID
+        WHERE TAWTS.STATUS = 1
+          AND TAWTS.REST_ID != 2
+          AND TAWTS.REST_ID != -1
+          AND TAWTS.REST_ID != -3
+          AND TA.ACC_ID = #{id}
+    </select>
+</mapper>
