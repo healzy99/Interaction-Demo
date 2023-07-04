@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.SessionRecordsMapper">
-
+    <select id="queryOCByPhone" resultType="com.example.demo.entity.OperationsCenter">
+        SELECT TOC.*
+        FROM t_operations_center TOC
+                 LEFT JOIN t_operations_center_phone TOCP ON TOCP.OC_ID = TOC.OC_ID
+        WHERE TOCP.PHONE_NUM = #{phone}
+          AND TOCP.STATE = 'Y'
+    </select>
 </mapper>

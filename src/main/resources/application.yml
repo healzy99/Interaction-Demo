@@ -1,6 +1,21 @@
 server:
   port: 9899
 spring:
+  # kafka配置
+  kafka:
+    bootstrap-servers: 10.100.14.86:9092
+    consumer:
+      group-id: interaction
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-commit-interval: 100
+    producer:
+      retries: 3
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   # redis配置
   redis:
     database: 8
