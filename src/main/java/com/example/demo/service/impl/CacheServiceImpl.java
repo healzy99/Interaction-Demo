@@ -51,17 +51,18 @@ public class CacheServiceImpl implements ICache {
 
     @Override
     public Long getUnusedAccount(String ocId) {
+        ocId = "Unused:" + ocId;
         // 获取运营中心的空闲坐席个数
-        Long size = redisTemplate.opsForHash().size(ocId);
-        if (size == 0) return null;
+        Long size = redisTemplate.opsForHash().size( ocId);
+        if (size == 0) return 0L;
         // 获取所有的空闲坐席
         Set<Object> keys = redisTemplate.opsForHash().keys(ocId);
         // 获取第一个坐席ID
         Optional<Object> first = keys.stream().findFirst();
-        if (!first.isPresent()) return null;
+        if (!first.isPresent()) return 0L;
         // 存在则删除该坐席并返回
         Long accountId = Long.parseLong(String.valueOf(first.get()));
-        return deleteUnusedAccount(ocId, accountId) ? accountId : 0;
+        return deleteUnusedAccount(ocId, accountId) ? accountId : 0L;
     }
 
     @Override

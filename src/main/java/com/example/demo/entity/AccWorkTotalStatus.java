@@ -8,6 +8,7 @@ import com.example.demo.entity.enums.WorkRestId;
 import com.example.demo.entity.enums.WorkStatus;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @TableName("t_acc_work_total_status")
+@Accessors(chain = true)
 public class AccWorkTotalStatus implements Serializable {
 
     private static final long serialVersionUID = 1L;

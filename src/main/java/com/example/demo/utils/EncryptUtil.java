@@ -619,7 +619,7 @@ public class EncryptUtil {
         String asciiEncode = EncryptUtil.ASCIIEncode(msg, ASCII_LENGTH);
         log.info("加密：{}", asciiEncode);
         log.info("解密：{}", EncryptUtil.ASCIIDncode(asciiEncode, ASCII_LENGTH));
-        log.info("解密：{}", EncryptUtil.ASCIIDncode("S01PUUpNUFNSNS", ASCII_LENGTH));
+        log.info("解密：{}", EncryptUtil.ASCIIDncode("TE5OSktKUExLLN", ASCII_LENGTH));
 
         // ASNNOMRKKSSSJMKPLKNL_ASSKNNJKJKg[O]qlNrJg
         String roomId = EncryptUtil.ASCIIEncode("445381199903162142_91440101MA5CWR4X0M", ASCII_LENGTH);

@@ -2,10 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.AccWorkTotalStatus;
 import com.example.demo.service.IAccWorkTotalStatusService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -28,5 +25,23 @@ public class AccWorkTotalStatusController {
         boolean b = accWorkTotalStatusService.saveOrUpdate(workTotalStatus);
         if (b) return "Success";
         return "Error";
+    }
+
+    @GetMapping("/batchSingIn")
+    public void batchSingIn(){
+        // 模拟随机坐席签入
+        accWorkTotalStatusService.batchSingIn();
+    }
+
+    @PostMapping("/singIn")
+    public void singIn(@RequestParam Long accountId){
+        // 坐席签出
+        accWorkTotalStatusService.singIn(accountId);
+    }
+
+    @PostMapping("/singUp")
+    public void singUp(@RequestParam Long accountId){
+        // 签出
+        accWorkTotalStatusService.singUp(accountId);
     }
 }

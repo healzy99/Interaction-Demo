@@ -1,5 +1,6 @@
 package com.example.demo.entity.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 /**
@@ -38,6 +39,7 @@ public enum WorkRestId {
      */
     BREAK(-3);
 
+    @EnumValue
     private final int code;
 
     WorkRestId(int code) {

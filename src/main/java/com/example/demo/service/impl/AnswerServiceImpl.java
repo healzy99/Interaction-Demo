@@ -6,6 +6,7 @@ import com.example.demo.entity.enums.SessionHandleState;
 import com.example.demo.entity.enums.SessionStatus;
 import com.example.demo.mapper.AccWorkTotalStatusMapper;
 import com.example.demo.mapper.SessionRecordsMapper;
+import com.example.demo.service.ICache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import javax.annotation.Resource;
 @Slf4j
 public class AnswerServiceImpl {
     @Resource
-    private CacheServiceImpl cacheService;
+    private ICache cacheService;
 
     @Resource
     private SessionRecordsMapper sessionRecordsMapper;

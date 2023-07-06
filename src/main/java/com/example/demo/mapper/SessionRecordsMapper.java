@@ -5,6 +5,7 @@ import com.example.demo.entity.OperationsCenter;
 import com.example.demo.entity.SessionRecords;
 import com.example.demo.entity.dto.AnswerDTO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface SessionRecordsMapper extends BaseMapper<SessionRecords> {
     List<OperationsCenter> queryOCByPhone(@Param("phone")String phone);
     List<OperationsCenter> queryParentOCByOCId(@Param("id")String ocId);
     AnswerDTO queryAnswerDTOByAccountId(@Param("id")Long accountId);
+
+    @Select("select PHONE_NUM from t_operations_center_phone where STATE = 'Y'")
+    List<String> getAllPhone();
 }

@@ -5,6 +5,7 @@ import com.example.demo.entity.OperationsCenter;
 import com.example.demo.entity.SessionRecords;
 import com.example.demo.entity.form.CallingForm;
 import com.example.demo.mapper.SessionRecordsMapper;
+import com.example.demo.service.ICache;
 import com.example.demo.service.ISessionRecordsService;
 import com.example.demo.utils.KafkaProducer;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
     private SessionRecordsMapper sessionRecordsMapper;
 
     @Resource
-    private CacheServiceImpl cacheService;
+    private ICache cacheService;
 
     @Resource
     private KafkaProducer<String> kafkaProducer;
@@ -49,6 +50,8 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
      *
      * @param form 呼入信息
      */
+    @Override
+    @Async("interaction-thread")
     public void callingBus(CallingForm form) {
         List<OperationsCenter> operationsCenters;
         // 判断是否需要转移
@@ -74,7 +77,7 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
         Optional<?> kafkaMessage = Optional.ofNullable(record.value());
         if (kafkaMessage.isPresent()) {
             String message = String.valueOf(kafkaMessage.get());
-            log.info("Kafka接收端发送消息：Topic-{},Message-{}.Record-{}", topic, message, record);
+            log.info("Kafka接收消息：Topic-{},Message-{}.Record-{}", topic, message, record);
             answerBus(message);
         }
     }
@@ -84,7 +87,6 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
      *
      * @param ocId 运营中心ID
      */
-    @Async("interaction-thread")
     public void answerBus(String ocId) {
         // 获取对应运营中心的第一个会话ID
         String sessionId = cacheService.leftPopSessionId(ocId);
@@ -112,7 +114,13 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
      *
      * @param sessionId 无效会话ID
      */
+    @Override
     public boolean invalidSessionList(String sessionId) {
         return cacheService.addInvalidSession(sessionId);
+    }
+
+    @Override
+    public List<String> getAllPhone() {
+        return sessionRecordsMapper.getAllPhone();
     }
 }
