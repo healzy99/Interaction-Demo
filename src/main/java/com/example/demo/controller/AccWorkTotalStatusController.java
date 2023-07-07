@@ -28,20 +28,32 @@ public class AccWorkTotalStatusController {
     }
 
     @GetMapping("/batchSingIn")
-    public void batchSingIn(){
+    public String batchSingIn(){
         // 模拟随机坐席签入
         accWorkTotalStatusService.batchSingIn();
+        return "Success";
+    }
+
+    @GetMapping("/batchSingUp")
+    public String batchSingUn(){
+        // 模拟随机坐席签入
+        accWorkTotalStatusService.batchSingUp();
+        return "Success";
     }
 
     @PostMapping("/singIn")
-    public void singIn(@RequestParam Long accountId){
+    public String singIn(@RequestParam Long accountId){
         // 坐席签出
-        accWorkTotalStatusService.singIn(accountId);
+        boolean b = accWorkTotalStatusService.singIn(accountId);
+        if (b) return "Success";
+        return "Error";
     }
 
     @PostMapping("/singUp")
-    public void singUp(@RequestParam Long accountId){
+    public String singUp(@RequestParam Long accountId){
         // 签出
-        accWorkTotalStatusService.singUp(accountId);
+        boolean b = accWorkTotalStatusService.singUp(accountId);
+        if (b) return "Success";
+        return "Error";
     }
 }

@@ -19,7 +19,11 @@ import java.util.List;
  */
 public interface SessionRecordsMapper extends BaseMapper<SessionRecords> {
     List<OperationsCenter> queryOCByPhone(@Param("phone")String phone);
-    List<OperationsCenter> queryParentOCByOCId(@Param("id")String ocId);
+
+    OperationsCenter queryParentOCByOCId(@Param("id") String ocId);
+
+    @Select("select * from t_operations_center where OC_ID = #{id}")
+    List<OperationsCenter> queryOCByOCId(@Param("id")String ocId);
     AnswerDTO queryAnswerDTOByAccountId(@Param("id")Long accountId);
 
     @Select("select PHONE_NUM from t_operations_center_phone where STATE = 'Y'")

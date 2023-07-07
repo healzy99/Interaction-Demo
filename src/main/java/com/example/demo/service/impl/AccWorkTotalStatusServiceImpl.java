@@ -45,23 +45,36 @@ public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatu
         // 根据坐席批量更改状态
         for (int i = 0; i < accounts.size(); i++) {
             Account account = accounts.get(RandomUtils.nextInt(0, accounts.size()));
-            AccWorkTotalStatus one = getOne(new QueryWrapper<AccWorkTotalStatus>().eq("ACC_ID", account.getAccId()));
-            if (one == null){
-                one = new AccWorkTotalStatus().setAccId(account.getAccId().toString()).setAccVersion(1).setId(UUID.randomUUID().toString()).setIsBusy(0).setCreateTime(LocalDateTime.now());
-            }
-            one.setStatus(WorkStatus.SING_IN).setRestId(WorkRestId.SING_IN).setUpdateTime(LocalDateTime.now());
-            boolean b = saveOrUpdate(one);
-            if (!b) log.error("坐席签入失败---Account: {}", one);
-            else {
-                cache.putIfAbsentUnusedAccount(account.getOcId(), account.getAccId());
-                log.info("坐席签入成功----OCID: {},Account Id: {},Status: {},RestId: {}", account.getOcId(), account.getAccId(), one.getStatus(), one.getRestId());
-            }
+//            AccWorkTotalStatus one = getOne(new QueryWrapper<AccWorkTotalStatus>().eq("ACC_ID", account.getAccId()));
+//            if (one == null){
+//                one = new AccWorkTotalStatus().setAccId(account.getAccId().toString()).setAccVersion(1).setId(UUID.randomUUID().toString()).setIsBusy(0).setCreateTime(LocalDateTime.now());
+//            }
+//            one.setStatus(WorkStatus.SING_IN).setRestId(WorkRestId.SING_IN).setUpdateTime(LocalDateTime.now());
+//            boolean b = saveOrUpdate(one);
+//            if (!b) log.error("坐席签入失败---Account: {}", one);
+//            else {
+            cache.putIfAbsentUnusedAccount(account.getOcId(), account.getAccId());
+            log.info("坐席签入成功----OCID: {},Account Id: {}", account.getOcId(), account.getAccId());
+//            }
             accounts.remove(account);
         }
     }
 
     @Override
-    public void singIn(Long accountId) {
+    public void batchSingUp() {
+        // 查询所有坐席
+        List<Account> accounts = accountService.list();
+        // 根据坐席批量更改状态
+        for (int i = 0; i < accounts.size(); i++) {
+            Account account = accounts.get(RandomUtils.nextInt(0, accounts.size()));
+            cache.deleteUnusedAccount("Unused:" + account.getOcId(), account.getAccId());
+            log.info("坐席签出成功----OCID: {},Account Id: {}", account.getOcId(), account.getAccId());
+            accounts.remove(account);
+        }
+    }
+
+    @Override
+    public boolean singIn(Long accountId) {
         Account account = accountService.getOne(new QueryWrapper<Account>().eq("ACC_ID", accountId));
         AccWorkTotalStatus accWorkTotalStatus = new AccWorkTotalStatus()
                 .setAccId(accountId.toString())
@@ -73,15 +86,18 @@ public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatu
                 .setRestId(WorkRestId.SING_IN)
                 .setUpdateTime(LocalDateTime.now());
         boolean b = saveOrUpdate(accWorkTotalStatus);
-        if (!b) log.error("坐席签入失败---Account: {}", accountId);
-        else {
+        if (!b) {
+            log.error("坐席签入失败---Account: {}", accountId);
+            return false;
+        } else {
             cache.putIfAbsentUnusedAccount(account.getOcId(), account.getAccId());
             log.info("坐席签入成功----OCID: {},Account Id: {},Status: {},RestId: {}", account.getOcId(), account.getAccId(), accWorkTotalStatus.getStatus(), accWorkTotalStatus.getRestId());
+            return true;
         }
     }
 
     @Override
-    public void singUp(Long accountId) {
+    public boolean singUp(Long accountId) {
         Account account = accountService.getOne(new QueryWrapper<Account>().eq("ACC_ID", accountId));
         AccWorkTotalStatus accWorkTotalStatus = new AccWorkTotalStatus()
                 .setAccId(accountId.toString())
@@ -93,10 +109,13 @@ public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatu
                 .setRestId(WorkRestId.EMPTY)
                 .setUpdateTime(LocalDateTime.now());
         boolean b = saveOrUpdate(accWorkTotalStatus);
-        if (!b) log.error("坐席签出失败---Account: {}", accountId);
-        else {
+        if (!b) {
+            log.error("坐席签出失败---Account: {}", accountId);
+            return false;
+        } else {
             cache.deleteUnusedAccount(account.getOcId(), accountId);
             log.info("坐席签出成功----OCID: {},Account Id: {},Status: {},RestId: {}", account.getOcId(), account.getAccId(), accWorkTotalStatus.getStatus(), accWorkTotalStatus.getRestId());
+            return true;
         }
     }
 }

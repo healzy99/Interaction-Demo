@@ -37,7 +37,7 @@ public class SessionRecordsController {
     @Async("interaction-thread")
     public void calling(){
         List<String> allPhone = sessionRecordsService.getAllPhone();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             String phone = allPhone.get(RandomUtils.nextInt(0, allPhone.size()));
             CallingForm form = new CallingForm().setSessionId(UUID.randomUUID().toString()).setPhone(phone);
             sessionRecordsService.callingBus(form);
@@ -45,9 +45,10 @@ public class SessionRecordsController {
     }
 
     @PostMapping("callOne")
-    public void callOne(@RequestParam String phone){
+    public String callOne(@RequestParam String phone){
         // 广州运营中心测试
         CallingForm form = new CallingForm().setSessionId(UUID.randomUUID().toString()).setPhone(phone);
         sessionRecordsService.callingBus(form);
+        return form.getSessionId();
     }
 }

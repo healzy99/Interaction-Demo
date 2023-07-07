@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 /**
  * @Author: heal
@@ -46,7 +47,8 @@ public class AnswerServiceImpl {
                     .setAccount(accountId)
                     .setOcId(answerDTO.getOcId())
                     .setStatus(SessionStatus.ANSWERED)
-                    .setHandleState(SessionHandleState.COMPLETED);
+                    .setHandleState(SessionHandleState.COMPLETED)
+                    .setCreateTime(LocalDateTime.now());
             saveSessionRecords(sessionRecords);
         } catch (InterruptedException e) {
             log.error("暂停线程报错：" + e);
@@ -56,16 +58,23 @@ public class AnswerServiceImpl {
 
     /**
      * 保存通话记录
+     *
      * @param sessionRecords 通话记录
      */
     public void saveSessionRecords(SessionRecords sessionRecords) {
         sessionRecordsMapper.insert(sessionRecords);
+        log.info("-------保存通话记录成功------");
         // 删除失效会话ID
         cacheService.removeInvalidSession(sessionRecords.getSessionId());
         // 添加空闲坐席，判断坐席是否已下线或忙碌中，未下线则添加进空闲坐席队列中
         AnswerDTO answerDTO = workTotalStatusMapper.getWorkStatusByAccount(sessionRecords.getAccount());
-        if (answerDTO == null) return;
+        log.info("-----坐席是否下线------");
+        if (answerDTO == null){
+            log.info("坐席已下线---AccountId：{}", sessionRecords.getAccount());
+            return;
+        }
         cacheService.putIfAbsentUnusedAccount(answerDTO.getOcId(), answerDTO.getAccountId());
+        log.info("坐席未下线---重新登记上线 OCID:{},AccountId:{}", answerDTO.getOcId(), answerDTO.getAccountId());
     }
 
 

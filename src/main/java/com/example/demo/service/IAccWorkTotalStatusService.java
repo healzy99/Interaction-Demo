@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IAccWorkTotalStatusService extends IService<AccWorkTotalStatus> {
     void batchSingIn();
-    void singIn(Long accountId);
-    void singUp(Long accountId);
+    void batchSingUp();
+    boolean singIn(Long accountId);
+    boolean singUp(Long accountId);
 }
