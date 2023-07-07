@@ -31,7 +31,8 @@ import java.util.UUID;
 @Service
 @Slf4j
 @Transactional
-public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatusMapper, AccWorkTotalStatus> implements IAccWorkTotalStatusService {
+public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatusMapper, AccWorkTotalStatus>
+        implements IAccWorkTotalStatusService {
     @Resource
     private ICache cache;
 
@@ -47,7 +48,10 @@ public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatu
             Account account = accounts.get(RandomUtils.nextInt(0, accounts.size()));
 //            AccWorkTotalStatus one = getOne(new QueryWrapper<AccWorkTotalStatus>().eq("ACC_ID", account.getAccId()));
 //            if (one == null){
-//                one = new AccWorkTotalStatus().setAccId(account.getAccId().toString()).setAccVersion(1).setId(UUID.randomUUID().toString()).setIsBusy(0).setCreateTime(LocalDateTime.now());
+//                one = new AccWorkTotalStatus()
+//                .setAccId(account.getAccId().toString())
+//                .setAccVersion(1)
+//                .setId(UUID.randomUUID().toString()).setIsBusy(0).setCreateTime(LocalDateTime.now());
 //            }
 //            one.setStatus(WorkStatus.SING_IN).setRestId(WorkRestId.SING_IN).setUpdateTime(LocalDateTime.now());
 //            boolean b = saveOrUpdate(one);
@@ -91,7 +95,9 @@ public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatu
             return false;
         } else {
             cache.putIfAbsentUnusedAccount(account.getOcId(), account.getAccId());
-            log.info("坐席签入成功----OCID: {},Account Id: {},Status: {},RestId: {}", account.getOcId(), account.getAccId(), accWorkTotalStatus.getStatus(), accWorkTotalStatus.getRestId());
+            log.info("坐席签入成功----OCID: {},Account Id: {},Status: {},RestId: {}",
+                    account.getOcId(), account.getAccId(),
+                    accWorkTotalStatus.getStatus(), accWorkTotalStatus.getRestId());
             return true;
         }
     }
@@ -114,7 +120,9 @@ public class AccWorkTotalStatusServiceImpl extends ServiceImpl<AccWorkTotalStatu
             return false;
         } else {
             cache.deleteUnusedAccount(account.getOcId(), accountId);
-            log.info("坐席签出成功----OCID: {},Account Id: {},Status: {},RestId: {}", account.getOcId(), account.getAccId(), accWorkTotalStatus.getStatus(), accWorkTotalStatus.getRestId());
+            log.info("坐席签出成功----OCID: {},Account Id: {},Status: {},RestId: {}",
+                    account.getOcId(), account.getAccId(), accWorkTotalStatus.getStatus(),
+                    accWorkTotalStatus.getRestId());
             return true;
         }
     }

@@ -33,7 +33,8 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
-public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper, SessionRecords> implements ISessionRecordsService {
+public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper, SessionRecords>
+        implements ISessionRecordsService {
 
     @Resource
     private SessionRecordsMapper sessionRecordsMapper;
@@ -64,11 +65,11 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
             // 需要转移的上级运营中心
             OperationsCenter center = sessionRecordsMapper.queryParentOCByOCId(form.getOcId());
             boolean unusedAccount = cacheService.isUnusedAccount(center.getOcId());
-            if (!unusedAccount){
+            if (!unusedAccount) {
                 operationsCenters = sessionRecordsMapper.queryOCByOCId(form.getOcId());
                 flag = true;
                 log.info("上线运营中心暂无坐席，继续在本坐席中心进行等待---{}", JSON.toJSONString(operationsCenters));
-            }else {
+            } else {
                 operationsCenters = Collections.singletonList(center);
                 log.info("转移至上线运营中心列表---{}", JSON.toJSONString(operationsCenters));
             }
@@ -85,8 +86,11 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
         for (OperationsCenter operationsCenter : operationsCenters) {
             log.info("运营中心：{}-接收到Session 会话:{}", operationsCenter.getOcName(), form.getSessionId());
             // 把Session ID写入对应的运营中心
-            if (flag) cacheService.leftPushSessionId(operationsCenter.getOcId(), form.getSessionId());
-            else cacheService.rightPushSessionId(operationsCenter.getOcId(), form.getSessionId());
+            if (flag) {
+                cacheService.leftPushSessionId(operationsCenter.getOcId(), form.getSessionId());
+            } else {
+                cacheService.rightPushSessionId(operationsCenter.getOcId(), form.getSessionId());
+            }
             // 对MQ下发通知携带运营中心
             kafkaProducer.send(operationsCenter.getOcId(), operationsCenter.getOcId());
         }
@@ -107,16 +111,19 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
      *
      * @param ocId 运营中心ID
      */
-    public void answerBus(String ocId) {
+    @SuppressWarnings("checkstyle:ReturnCount")
+    public boolean answerBus(String ocId) {
         // 获取对应运营中心的第一个会话ID
         String sessionId = cacheService.leftPopSessionId(ocId);
-        if (StringUtils.isBlank(sessionId)) return;
+        if (StringUtils.isBlank(sessionId)) {
+            return false;
+        }
         log.info("会话ID：{}", sessionId);
         // 判断该会话是否已结束
         boolean isInvalid = cacheService.isMemberInvalidSession(sessionId);
         if (isInvalid) {
             log.info("会话已结束---运营中心：{}，会话：{}", ocId, sessionId);
-            return;
+            return false;
         }
         // 获取空闲坐席
         Long unusedAccount = cacheService.getUnusedAccount(ocId);
@@ -126,10 +133,11 @@ public class SessionRecordsServiceImpl extends ServiceImpl<SessionRecordsMapper,
             CallingForm callingForm = new CallingForm().setSessionId(sessionId).setOcId(ocId).setTransfer(true);
             log.info("当前运营中心无空闲坐席，准备转至上线运营中心----当前运营中心：{}", ocId);
             callingBus(callingForm);
-            return;
+            return true;
         }
         // 如果有则进行接通
         answerService.answer(sessionId, unusedAccount);
+        return true;
     }
 
     /**

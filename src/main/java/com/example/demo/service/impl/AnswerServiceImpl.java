@@ -29,6 +29,8 @@ public class AnswerServiceImpl {
     @Resource
     private AccWorkTotalStatusMapper workTotalStatusMapper;
 
+    private static final int SLEEP = 10000;
+
     @Async("interaction-thread")
     public void answer(String sessionId, Long accountId) {
         // 添加进失效Session
@@ -37,7 +39,7 @@ public class AnswerServiceImpl {
         log.info("方欣接口接听电话中------SessionID: {},AccountID: {}", sessionId, accountId);
         // 模拟通话结束后通知写入通话数据
         try {
-            Thread.sleep(10000);
+            Thread.sleep(SLEEP);
             AnswerDTO answerDTO = sessionRecordsMapper.queryAnswerDTOByAccountId(accountId);
             // 返回通话结果
             SessionRecords sessionRecords = new SessionRecords()
@@ -69,7 +71,7 @@ public class AnswerServiceImpl {
         // 添加空闲坐席，判断坐席是否已下线或忙碌中，未下线则添加进空闲坐席队列中
         AnswerDTO answerDTO = workTotalStatusMapper.getWorkStatusByAccount(sessionRecords.getAccount());
         log.info("-----坐席是否下线------");
-        if (answerDTO == null){
+        if (answerDTO == null) {
             log.info("坐席已下线---AccountId：{}", sessionRecords.getAccount());
             return;
         }

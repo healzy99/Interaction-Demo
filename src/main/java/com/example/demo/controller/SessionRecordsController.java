@@ -26,18 +26,22 @@ public class SessionRecordsController {
     @Resource
     private ISessionRecordsService sessionRecordsService;
 
+    private static final int LOOP_NUMBER = 10;
+
     @PostMapping("/invalidSession")
     public String invalidSession(@RequestParam String sessionId) {
         boolean b = sessionRecordsService.invalidSessionList(sessionId);
-        if (b) return "Success";
+        if (b) {
+            return "Success";
+        }
         return "Error";
     }
 
     @GetMapping("/calling")
     @Async("interaction-thread")
-    public void calling(){
+    public void calling() {
         List<String> allPhone = sessionRecordsService.getAllPhone();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < LOOP_NUMBER; i++) {
             String phone = allPhone.get(RandomUtils.nextInt(0, allPhone.size()));
             CallingForm form = new CallingForm().setSessionId(UUID.randomUUID().toString()).setPhone(phone);
             sessionRecordsService.callingBus(form);
@@ -45,7 +49,7 @@ public class SessionRecordsController {
     }
 
     @PostMapping("callOne")
-    public String callOne(@RequestParam String phone){
+    public String callOne(@RequestParam String phone) {
         // 广州运营中心测试
         CallingForm form = new CallingForm().setSessionId(UUID.randomUUID().toString()).setPhone(phone);
         sessionRecordsService.callingBus(form);

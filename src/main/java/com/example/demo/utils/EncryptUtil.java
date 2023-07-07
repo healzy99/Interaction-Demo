@@ -53,7 +53,7 @@ public class EncryptUtil {
     /**
      * ASCII 自定义加密前缀
      */
-    public static String ASCII_PREFIX = "AS";
+    public static String ASCII_PREFIX = "";
 
     /**
      * ASCII 自定义加密长度
@@ -606,23 +606,24 @@ public class EncryptUtil {
     }
 
 //    public static void main(String[] args) {
-//        String groupId = "TG440106199305161215_440100579964852";
-//        String[] strings = groupId.split("_");
+//        String groupId = "TG440106199602031215_null";
+//        String s = EncryptUtil.ASCIIEncode(groupId, EncryptUtil.ASCII_LENGTH);
+//       /* String[] strings = groupId.split("_");
 //        StringBuilder stringBuilder = new StringBuilder();
-//        System.out.println("----------"+EncryptUtil.ASCIIEncode(groupId, EncryptUtil.ASCII_LENGTH));
-//
 //        for (String o : strings) {
 //            stringBuilder.append(EncryptUtil.ASCIIEncode(o, EncryptUtil.ASCII_LENGTH)).append("_");
 //        }
 //        if (stringBuilder.length() > 0) {
 //            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
 //        }
-//        groupId = stringBuilder.toString();
-//        System.out.println(groupId);
+//        groupId = stringBuilder.toString();*/
+//        String asciiEncode = EncryptUtil.ASCIIEncode(groupId, ASCII_LENGTH);
+//        System.out.println(s);
+//        System.out.println(asciiEncode);
 //    }
 
     public static void main(String[] args) {
-        String msg = "TG440106199305161215_440100579964852";
+        String msg = "TG440106199602031215_null";
 //        log.info("insert :{}", new StringBuilder(msg).insert(0, "abc").toString());
         //原文：String msg = "440 981 199 601 186 12";
         //偏移：String msg = "NNJ SRK KSS PJK KRP KL";
@@ -632,10 +633,10 @@ public class EncryptUtil {
 //        String aeSencode = new EncryptUtil().AESencode("44098119960118612", "1");
 //        System.out.println(deSencode);
 //        System.out.println(aeSencode);
-     /*   String asciiEncode = EncryptUtil.ASCIIEncode(msg, ASCII_LENGTH);
+        String asciiEncode = EncryptUtil.ASCIIEncode(msg, ASCII_LENGTH);
         log.info("加密：{}", asciiEncode);
-        log.info("解密：{}", EncryptUtil.ASCIIDncode(asciiEncode, ASCII_LENGTH));*/
-        log.info("解密：{}", EncryptUtil.ASCIIDncode("ASnaNNJKJPKSSMJOKPKLKO_ASNNJKJJOQSSPNROL", ASCII_LENGTH));
+        log.info("解密：{}", EncryptUtil.ASCIIDncode(asciiEncode, ASCII_LENGTH));
+        log.info("解密：{}", EncryptUtil.ASCIIDncode("naNNJKJPKSSPJLJMKLKO_", ASCII_LENGTH));
         // ASNNOMRKKSSSJMKPLKNL_ASSKNNJKJKg[O]qlNrJg
 /*        String roomId = EncryptUtil.ASCIIEncode("445381199903162142_91440101MA5CWR4X0M", ASCII_LENGTH);
 //        String roomId = EncryptUtil.ASCIIEncode("91440101MA5CWR4X0M", ASCII_LENGTH);

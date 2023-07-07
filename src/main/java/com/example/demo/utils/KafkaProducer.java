@@ -1,6 +1,5 @@
 package com.example.demo.utils;
 
-import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -11,6 +10,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import javax.annotation.Resource;
 
 /**
+ * @param <T> 发送消息的值的泛型
  * @Author: heal
  * @Date: 2023/7/3 14:48
  */
