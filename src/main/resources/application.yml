@@ -14,8 +14,8 @@ spring:
       retries: 3
       batch-size: 16384
       buffer-memory: 33554432
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
   # redis配置
   redis:
     database: 8
@@ -101,15 +101,14 @@ logging:
   config: classpath:logback-spring.xml
   level:
     org:
-      mybatis: debug
+      mybatis: info
     web:
-      mapper: debug
+      mapper: info
 log:
   path: D:\Project\Interaction-Demo\logs
 # Mybatis-plus配置
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     cache-enabled: false
     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
   mapper-locations: classpath*:/mapper/*.xml

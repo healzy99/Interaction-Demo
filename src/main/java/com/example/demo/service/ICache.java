@@ -6,12 +6,17 @@ package com.example.demo.service;
  */
 public interface ICache {
     /**
-     * 添加附属于运营中心的SessionID
+     * 添加附属于运营中心的SessionID到队列最后
      * @param ocId 运营中心ID
      * @param sessionId 会话ID
-     * @return 返回是否添加成功
      */
-    boolean rightPushSessionId(String ocId,String sessionId);
+    void rightPushSessionId(String ocId,String sessionId);
+    /**
+     * 添加附属于运营中心的SessionID到队列最前
+     * @param ocId 运营中心ID
+     * @param sessionId 会话ID
+     */
+    void leftPushSessionId(String ocId,String sessionId);
 
     /**
      * 根据运营中心ID获取Session ID
@@ -48,10 +53,18 @@ public interface ICache {
 
     /**
      * 获取对应运营中心的空闲坐席
+     *
      * @param ocId 运营中心ID
      * @return 返回空闲坐席的AccountId
      */
     Long getUnusedAccount(String ocId);
+
+    /**
+     * 判断该运营中心是否有坐席上线
+     * @param ocId 运营中心
+     * @return 返回是否有空闲坐席
+     */
+    boolean isUnusedAccount(String ocId);
     /**
      * 删除对应运营中心的坐席
      * @param ocId 运营中心ID

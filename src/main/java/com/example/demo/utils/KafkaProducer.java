@@ -23,11 +23,9 @@ public class KafkaProducer<T> {
     public static final String TOPIC = "topic-interaction";
 
     public void send(String key, T obj) {
-        String jsonObj = JSON.toJSONString(obj);
-        log.info("kafka send message = {}", jsonObj);
-
+        log.info("kafka send message = {}", obj);
         //发送消息
-        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(TOPIC, key, jsonObj);
+        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(TOPIC, key, obj);
         future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
             @Override
             public void onFailure(Throwable throwable) {

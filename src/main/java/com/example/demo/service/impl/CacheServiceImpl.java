@@ -18,9 +18,13 @@ public class CacheServiceImpl implements ICache {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public boolean rightPushSessionId(String ocId, String sessionId) {
-        Long push = redisTemplate.opsForList().rightPush("Session:" + ocId, sessionId);
-        return push != null && push > 0;
+    public void rightPushSessionId(String ocId, String sessionId) {
+        redisTemplate.opsForList().rightPush("Session:" + ocId, sessionId);
+    }
+
+    @Override
+    public void leftPushSessionId(String ocId, String sessionId) {
+        redisTemplate.opsForList().leftPush("Session:" + ocId, sessionId);
     }
 
     @Override
@@ -53,7 +57,7 @@ public class CacheServiceImpl implements ICache {
     public Long getUnusedAccount(String ocId) {
         ocId = "Unused:" + ocId;
         // 获取运营中心的空闲坐席个数
-        Long size = redisTemplate.opsForHash().size( ocId);
+        Long size = redisTemplate.opsForHash().size(ocId);
         if (size == 0) return 0L;
         // 获取所有的空闲坐席
         Set<Object> keys = redisTemplate.opsForHash().keys(ocId);
@@ -66,8 +70,14 @@ public class CacheServiceImpl implements ICache {
     }
 
     @Override
+    public boolean isUnusedAccount(String ocId) {
+        Long size = redisTemplate.opsForHash().size("Unused:" + ocId);
+        return size > 0;
+    }
+
+    @Override
     public boolean deleteUnusedAccount(String ocId, Long accountId) {
-        Long delete = redisTemplate.opsForHash().delete("Unused:" + ocId, accountId.toString());
+        Long delete = redisTemplate.opsForHash().delete(ocId, accountId.toString());
         return delete > 0;
     }
 
